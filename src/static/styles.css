@@ -154,6 +154,7 @@ footer {
   list-style: none;
   padding: 0;
   margin: 0;
+  padding-left: 0; /* ensure no bullets or extra indentation */
 }
 
 .participant-item {
@@ -162,6 +163,26 @@ footer {
   gap: 10px;
   padding: 8px 0;
   border-top: 1px dashed #eee;
+}
+
+/* delete/unregister button */
+.delete-participant {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: #c62828;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.delete-participant:hover,
+.delete-participant:focus {
+  color: #b71c1c;
+  background: rgba(198, 40, 40, 0.05);
+  outline: none;
 }
 
 .avatar {

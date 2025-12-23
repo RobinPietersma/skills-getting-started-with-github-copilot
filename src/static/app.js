@@ -51,7 +51,52 @@ document.addEventListener("DOMContentLoaded", () => {
             li.innerHTML = `
               <span class="avatar">${getInitials(p)}</span>
               <span class="participant-email">${p}</span>
+              <button class="delete-participant" title="Unregister" aria-label="Unregister ${p}">&times;</button>
             `;
+
+            // Handle unregister click
+            li.querySelector('.delete-participant').addEventListener('click', async () => {
+              if (!confirm(`Unregister ${p} from ${name}?`)) return;
+              try {
+                const resp = await fetch(
+                  `/activities/${encodeURIComponent(name)}/unregister?email=${encodeURIComponent(p)}`,
+                  { method: 'POST' }
+                );
+                const result = await resp.json();
+
+                if (resp.ok) {
+                  // Remove the list item
+                  participantsListEl.removeChild(li);
+
+                  // If no more participants, show placeholder
+                  const remaining = participantsListEl.querySelectorAll('.participant-item');
+                  if (remaining.length === 0) {
+                    const emptyLi = document.createElement('li');
+                    emptyLi.className = 'no-participants';
+                    emptyLi.textContent = 'No participants yet';
+                    participantsListEl.appendChild(emptyLi);
+                  }
+
+                  messageDiv.textContent = result.message;
+                  messageDiv.className = 'success';
+                  messageDiv.classList.remove('hidden');
+
+                  setTimeout(() => {
+                    messageDiv.classList.add('hidden');
+                  }, 4000);
+                } else {
+                  messageDiv.textContent = result.detail || 'An error occurred';
+                  messageDiv.className = 'error';
+                  messageDiv.classList.remove('hidden');
+                }
+              } catch (error) {
+                messageDiv.textContent = 'Failed to unregister. Please try again.';
+                messageDiv.className = 'error';
+                messageDiv.classList.remove('hidden');
+                console.error('Error unregistering:', error);
+              }
+            });
+
             participantsListEl.appendChild(li);
           });
         } else {
